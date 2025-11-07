@@ -1,0 +1,49 @@
+Using GPT-2 for Text Generation
+Load Pre-trained Model and Tokenizer: Utilize the Hugging Face transformers library to load a pre-trained GPT-2 model (e.g., gpt2) and its associated tokenizer.
+Python
+
+    from transformers import AutoModelForCausalLM, AutoTokenizer
+
+    model_name = "gpt2"
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    model = AutoModelForCausalLM.from_pretrained(model_name)
+Prepare Input: Encode your desired prompt or seed text using the tokenizer.
+Python
+
+    prompt = "The future of artificial intelligence will"
+    input_ids = tokenizer.encode(prompt, return_tensors="pt")
+Generate Text: Use the model's generate method, specifying parameters like max_length for the desired output length and temperature for controlling randomness (higher temperature for more creative output, lower for more focused).
+Python
+
+    output = model.generate(input_ids, max_length=100, num_return_sequences=1, temperature=0.7)
+    generated_text = tokenizer.decode(output[0], skip_special_tokens=True)
+    print(generated_text)
+Using LSTM for Text Generation
+Data Preparation:
+Collect Text Data: Obtain a corpus of text relevant to your desired generation topic.
+Preprocessing: Clean the text (e.g., lowercase, remove punctuation, handle special characters).
+Tokenization and N-gram Sequences: Convert text into sequences of words or characters. Create input-target pairs where the input is a sequence (e.g., N words) and the target is the next word.
+Numerical Encoding: Map words/characters to unique integer IDs.
+Build LSTM Model:
+Embedding Layer: Convert numerical input sequences into dense vector representations.
+LSTM Layers: Stack one or more LSTM layers to capture sequential dependencies in the text.
+Dense Layer: A final dense layer with a softmax activation function to predict the probability distribution of the next word/character.
+Python
+
+    from tensorflow.keras.models import Sequential
+    from tensorflow.keras.layers import Embedding, LSTM, Dense
+
+    # Assuming vocab_size, embedding_dim, and max_sequence_length are defined
+    model = Sequential([
+        Embedding(vocab_size, embedding_dim, input_length=max_sequence_length),
+        LSTM(128, return_sequences=True),
+        LSTM(128),
+        Dense(vocab_size, activation='softmax')
+    ])
+    model.compile(loss='categorical_crossentropy', optimizer='adam')
+Train the Model: Feed the prepared input-target sequences to the model for training.
+Generate Text:
+Provide a seed sequence.
+Predict the next word/character using the trained model.
+Append the predicted element to the sequence and repeat the prediction process until the desired length is reached.
+Convert the numerical output back to text.
